@@ -21,6 +21,7 @@ Items included in this .htaccess are:
 ## What does this do?
 
 This creates a .htaccess file in your hugo site root directory.
+If all you do is add the module, it will create the default configuration below.
 
 ## Configuration
 
@@ -28,10 +29,11 @@ This module have very little configuration.
 
 But all of them can be configured in your hugo site config parameters.
 
-Items that are configurable:
-
-If you have a dedicated params file use:
+### None of these settings are necessary but if you want to change them you can!
+If you have a dedicated params file here are the configurable settings:
 ```yaml
+## These are the default settings and are NOT required!
+
 security:
   csp: # Content Security Policy (None By Default)
     policy: ""
@@ -45,6 +47,7 @@ apache:
   cache: true
 ```
 
+### Redirects
 Redirects are done a bit differently.
 
 In your sites `data` folder.
@@ -62,15 +65,11 @@ oldURL: /old/url
 It will automatically redirect it to the current page.
 
 
-## By Default
-
-Redirect for 404 is your sites root folder /404.html
+## Default .htaccess
 
 ```apache
 # Apache headers
 # Automatically generated
-# Redirects are done using the data file redirects
-# from: and to: are necessary
 
 RewriteEngine On
 ErrorDocument 404 /404.html
