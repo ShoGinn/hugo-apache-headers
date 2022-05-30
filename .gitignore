@@ -4,7 +4,8 @@
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -24,3 +25,11 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Directories ignored for Hugo builds
+public/
+node_modules/
+vendor/
+resources/
+assets/jsconfig.json
+.hugo_build.lock

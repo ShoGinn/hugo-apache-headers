@@ -6,4 +6,9 @@ outputFormats:
   apache_headers:
     baseName: .htaccess
     isPlainText: true
-    notAlternative: false
+    mediatype: text/apache
+    notAlternative: true
+mediaTypes:
+  text/apache:
+    delimiter: ''
+    suffixes: ['']

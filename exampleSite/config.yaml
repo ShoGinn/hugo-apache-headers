@@ -1,0 +1,10 @@
+baseURL: http://example.org/
+languageCode: en-us
+title: My New Hugo Site
+
+module:
+  imports:
+    - path: github.com/shoginn/hugo-apache-headers
+
+outputs:
+  home: [HTML, apache_headers]
