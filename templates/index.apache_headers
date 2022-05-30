@@ -72,7 +72,7 @@ Redirect 301 {{ .from }} {{ .to }}
     </IfModule>
 
 </IfModule>
-{{- end -}}
+{{- end }}
 
 {{ if $apache_cache -}}
 <IfModule mod_expires.c>
