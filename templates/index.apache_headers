@@ -1,0 +1,133 @@
+{{- $csp_policy := site.Params.security.csp.policy | default "" -}}
+{{- $csp_report_only := site.Params.security.csp.report_only | default false -}}
+{{- $allow_frame := site.Params.security.allow_frame | default false -}}
+{{- $default_perms := "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()" -}}
+{{- $permissions_policy := site.Params.security.permissions.policy | default $default_perms -}}
+{{- $error_document := site.Params.apache.error_document | default "404.html" -}}
+{{- $apache_deflate := site.Params.apache.deflate | default true -}}
+{{- $apache_cache := site.Params.apache.cache | default true -}}
+
+# Apache headers
+# Automatically generated
+# Documentation: https://github.com/shoginn/hugo-apache-headers/
+{{/* Default items that should always be present. */}}
+RewriteEngine On
+ErrorDocument 404 {{ $error_document | relURL -}}
+{{- range .Site.AllPages -}}
+{{- $link := .RelPermalink -}}
+{{- with .Params.oldUrl }}
+Redirect 301 {{ . }} {{ $link | replaceRE "/$" "" }}
+{{- end -}}
+{{- end }}
+{{ range .Site.Data.redirects.redirects }}
+Redirect 301 {{ .from }} {{ .to }}
+{{ end }}
+<IfModule mod_headers.c>
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+  Header set X-XSS-Protection "1; mode=block" 
+  Header set X-Content-Type-Options nosniff 
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  {{ if not $allow_frame }}Header always set X-Frame-Options: DENY{{ end }}
+  {{ with $permissions_policy -}}
+    Header always set Permissions-Policy "{{ replaceRE "(\\s\\s+)" " " (trim . " ") }}"
+  {{- end }}
+  {{- with $csp_policy -}}
+    Header add Content-Security-Policy {{- if $csp_report_only -}}-Report-Only{{- end -}}: "{{ replaceRE "(\\s\\s+)" " " (trim . " ") }}"{{- end }}
+</IfModule>
+
+{{ if $apache_deflate -}}
+<IfModule mod_deflate.c>
+
+    # Force compression for mangled headers.
+    # https://developer.yahoo.com/blogs/ydn/pushing-beyond-gzipping-25601.html
+    <IfModule mod_setenvif.c>
+        <IfModule mod_headers.c>
+            SetEnvIfNoCase ^(Accept-EncodXng|X-cept-Encoding|X{15}|~{15}|-{15})$ ^((gzip|deflate)\s*,?\s*)+|[X~-]{4,13}$ HAVE_Accept-Encoding
+            RequestHeader append Accept-Encoding "gzip,deflate" env=HAVE_Accept-Encoding
+        </IfModule>
+    </IfModule>
+
+    # Compress all output labeled with one of the following MIME-types
+    # (for Apache versions below 2.3.7, you don't need to enable `mod_filter`
+    #  and can remove the `<IfModule mod_filter.c>` and `</IfModule>` lines
+    #  as `AddOutputFilterByType` is still in the core directives).
+    <IfModule mod_filter.c>
+        AddOutputFilterByType DEFLATE application/atom+xml \
+                                      application/javascript \
+                                      application/json \
+                                      application/rss+xml \
+                                      application/vnd.ms-fontobject \
+                                      application/x-font-ttf \
+                                      application/x-web-app-manifest+json \
+                                      application/xhtml+xml \
+                                      application/xml \
+                                      font/opentype \
+                                      image/svg+xml \
+                                      image/x-icon \
+                                      text/css \
+                                      text/html \
+                                      text/plain \
+                                      text/x-component \
+                                      text/xml
+    </IfModule>
+
+</IfModule>
+{{- end -}}
+
+{{ if $apache_cache -}}
+<IfModule mod_expires.c>
+    ExpiresActive on
+  # Add Types
+    AddType		    application/x-font-woff 				      .woff .woff2
+    AddType 	    image/svg+xml 							          .svg
+    
+    ExpiresDefault                                      "access plus 1 month"
+
+  # CSS
+    ExpiresByType text/css                              "access plus 1 year"
+
+  # Data interchange
+    ExpiresByType application/json                      "access plus 0 seconds"
+    ExpiresByType application/xml                       "access plus 0 seconds"
+    ExpiresByType text/xml                              "access plus 0 seconds"
+
+  # Favicon (cannot be renamed!)
+    ExpiresByType image/x-icon                          "access plus 1 week"
+
+  # HTML components (HTCs)
+    ExpiresByType text/x-component                      "access plus 1 month"
+
+  # HTML
+    ExpiresByType text/html                             "access plus 0 seconds"
+
+  # JavaScript
+    ExpiresByType application/javascript                "access plus 1 year"
+
+  # Manifest files
+    ExpiresByType application/x-web-app-manifest+json   "access plus 0 seconds"
+    ExpiresByType text/cache-manifest                   "access plus 0 seconds"
+
+  # Media
+    ExpiresByType audio/ogg                             "access plus 1 year"
+    ExpiresByType image/gif                             "access plus 1 year"
+    ExpiresByType image/jpeg                            "access plus 1 year"
+    ExpiresByType image/png                             "access plus 1 year"
+    ExpiresByType image/webp                            "access plus 1 year"
+    ExpiresByType video/mp4                             "access plus 1 month"
+    ExpiresByType video/ogg                             "access plus 1 month"
+    ExpiresByType video/webm                            "access plus 1 month"
+
+  # Web feeds
+    ExpiresByType application/atom+xml                  "access plus 1 hour"
+    ExpiresByType application/rss+xml                   "access plus 1 hour"
+
+  # Web fonts
+    ExpiresByType application/font-woff2                "access plus 1 year"
+    ExpiresByType application/font-woff                 "access plus 1 year"
+    ExpiresByType application/x-font-woff               "access plus 1 year"
+    ExpiresByType application/vnd.ms-fontobject         "access plus 1 month"
+    ExpiresByType application/x-font-ttf                "access plus 1 month"
+    ExpiresByType font/opentype                         "access plus 1 month"
+    ExpiresByType image/svg+xml                         "access plus 1 year"
+</IfModule>
+{{- end -}}

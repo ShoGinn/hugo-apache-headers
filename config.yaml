@@ -1,0 +1,9 @@
+module:
+  mounts:
+    - source: templates
+      target: layouts
+outputFormats:
+  apache_headers:
+    baseName: .htaccess
+    isPlainText: true
+    notAlternative: false
