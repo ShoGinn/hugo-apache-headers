@@ -1,0 +1,48 @@
+enable: true
+expires_default: access plus 1 month
+add_types:
+  - type: application/x-font-woff
+    extensions:
+      - .woff
+      - .woff2
+  - type: image/svg+xml
+    extensions:
+      - .svg
+expires:
+  - plus: 0 seconds
+    type:
+      - application/json
+      - application/xml
+      - text/xml
+      - text/html
+      - application/x-web-app-manifest+json
+      - text/cache-manifest
+  - plus: 1 hour
+    type:
+      - application/atom+xml
+      - application/rss+xml
+  - plus: 1 week
+    type: 
+      - image/x-icon
+  - plus: 1 month
+    type:
+      - application/vnd.ms-fontobject
+      - application/x-font-ttf
+      - font/opentype
+      - text/x-component
+      - video/mp4
+      - video/ogg
+      - video/webm
+  - plus: 1 year
+    type:
+      - application/javascript
+      - audio/ogg
+      - image/gif
+      - image/jpeg
+      - image/png
+      - image/webp
+      - application/font-woff2
+      - application/font-woff
+      - application/x-font-woff
+      - image/svg+xml
+      - text/css
