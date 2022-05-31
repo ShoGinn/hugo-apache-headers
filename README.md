@@ -90,6 +90,31 @@ It will automatically redirect it to the current page.
 | Compression | bool | true |
 | Cache | bool | true |
 
+## Cache Configuration
+
+If you want to change the default cache options put the file `apache_cache.yml` in your `data` folder.
+
+Using this format 
+
+```yaml
+enable: true
+expires_default: access plus 1 month
+add_types:
+  - type: application/x-font-woff
+    extensions:
+      - .woff
+      - .woff2
+  - type: image/svg+xml
+    extensions:
+      - .svg
+expires:
+  - plus: 0 seconds
+    type:
+      - application/json
+      - application/xml
+```
+---
+
 ## Default .htaccess
 
 ```apache
