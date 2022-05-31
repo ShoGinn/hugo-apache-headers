@@ -37,7 +37,7 @@ If you have a dedicated params file here are the configurable settings:
 security:
   csp: # Content Security Policy (None By Default)
     policy: ""
-    report_only: false
+    report_only: false # If true, the policy will be reported but not enforced
   allow_frame: false # X-Frame-Options: DENY (true =  remove)
   permissions:
     policy: "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
@@ -64,6 +64,31 @@ oldURL: /old/url
 ```
 It will automatically redirect it to the current page.
 
+## .htaccess Items
+---
+### Non-Configurable
+| Parameter | Value Type | Value | 
+|:----------|:------------:|:---------|
+| Strict-Transport-Security | string | max-age=31536000; includeSubDomains|
+| X-XSS-Protection | string | 1; mode=block|
+| X-Content-Type-Options | string|sniff|
+| Referrer-Policy | string | strict-origin-when-cross-origin |
+
+---
+### Configurable
+| Parameter | Value Type | Default Value | Configurable-Type | Overridable on Page |
+|:----------|:------------:|:---------|:--------------:|:----:|
+| Error Document | string | 404.html | string | false |
+| X-Frame-Options | string | DENY | bool | no |
+| Permissions-Policy | string | accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=() | string | no |
+| Content-Security-Policy | string | *Null* | string | no |
+| *Content-Security-Policy-Report-Only* | *n/a* | *n/a* | bool | no |
+
+## Sections
+| Section | Type | Default Value |
+|:----------|:------------:|:---------|
+| Compression | bool | true |
+| Cache | bool | true |
 
 ## Default .htaccess
 
